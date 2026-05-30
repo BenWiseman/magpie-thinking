@@ -150,19 +150,43 @@ That cost curve is the part that matters most for people building things. If you
 
 ---
 
-## What I think this means
+## What this means for AI
 
-This is a narrow experiment — one task family, one cognitive operation, one neurodivergent profile. That narrowness is by design.
+Stripping the result to its load-bearing sentence: **tangent-return prompting is the only condition we tested that preserves conceptual spread across an LLM's response.** Every other tested intervention — extra examples, extra tokens, more elaborate per-use detail — left the model elaborating within the same conceptual neighbourhood. Tangent-return is what makes it leave.
 
-I'm not claiming "neurodiversity fixes AI". I'm not even claiming that *the operation itself*, rather than the extra tokens or the in-prompt examples, is doing all the work — that takes ablations I haven't run yet, and the paper version names exactly which ones. What I am claiming is something narrower and more interesting:
+That's a more specific claim than "this prompt is better" and a more useful one. It tells you when to reach for the operation (open-ended exploration, novel angles, brainstorming, design surface searches) and when it'll waste your money (single-right-answer tasks, fact lookup, math). It tells you why pure "be creative" prompting underperforms — it asks for an output property without specifying the cognitive operation that produces it. And it identifies a measurable signature you can use to test whether other neurodivergent operations do similar work.
 
-**Cognitive variance — including the variance associated with neurodivergent thinking — is a legitimate source of design inspiration for AI systems.** Not just accessibility (how do we serve neurodivergent users?), not just fairness (are we biased against neurodivergent inputs?), but *engineering*. The way some brains differ from the centroid produces operations that, when encoded as prompts, measurably improve LLM outputs.
+For practical AI use, the implication is concrete. The dominant prompting toolkit treats the model as a single reasoner to be coaxed louder. The data here suggest a different posture: specify the cognitive *operation*, not the desired *property*. There are entire communities of people who can articulate cognitive operations from inside — and some of those operations work on machines as well as they work on us.
 
-The current AI prompting literature treats the model as a single undifferentiated reasoner to be coaxed into better outputs. That's leaving structure on the table. There are entire communities of people who can self-articulate cognitive operations the centroid doesn't include — and some of those operations work on machines as well as they work on us.
+## What this means for neurodivergent people
 
-The patterns labelled in clinical contexts as "tangential", "scattered", "high cognitive load", "atypical" are not — or not only — deficits. Some of them are productive operations operating in environments that weren't designed for them. When you put them in an environment that was, they produce measurable value.
+I want to land this carefully because it's the part I actually care about.
 
-If that's true in general — and the question of how generally it's true is a real research programme — then "neurotypical" has been functioning as a default not because it's optimal but because it's *the default*. The work isn't to fix the deviations. The work is to figure out which deviations are doing useful things, and to encode them.
+Tangent-return has been pathologised in psychiatric literature for decades. "Tangential thinking" is a clinical sign. The framing assumes the observer can't see why the tangent was taken — and so the tangent is treated as a derailment of thought, full stop. The *return*, when it happens, is invisible to that observer. From inside, the return is the whole point. From outside, the return looks like luck.
+
+What the data here say, for the first time at this level of empirical precision, is that **the return is doing measurable work that nothing else replicates**. It's not "creativity" in a vague sense. It's a specific structural property: when given extended bandwidth to think, the tangent-return pattern uses that bandwidth to *travel to new conceptual neighbourhoods* rather than to dig further into the one it's already in. The dominant cognitive pattern, when given the same bandwidth, goes deeper. Neither is better in the abstract — they're **allocated differently**.
+
+That distinction matters enormously, and it's the part that's been missing from the conversation.
+
+**Most workplaces and schools have only ever measured the cost.** Sleep disturbance, conversational misalignment, executive function load, the social tax of saying the non-obvious thing in a meeting. Those costs are real — they're real for me — and I don't want to pretend otherwise. But the value has been treated as anecdote, or as exception, or as "well, *that* particular person is special". This experiment is one data point on the value side of the ledger. The pattern produces a structural property that conventional cognition, when matched on compute, does not produce. That isn't anecdote. It's a measurement.
+
+**If your work needs spread, not just depth, the dominant cognitive pattern has been costing you something you couldn't see.** That covers more domains than most leadership realises: novel-product exploration, finding the right framing of a problem, generating alternative interpretations of data, design across constraint spaces, organisational change, hiring rubrics that don't already exist. The list of jobs that benefit from spread is long. The list of jobs where ND people are reflexively flagged for "not fitting the process" overlaps with it.
+
+**The inclusion conversation needs an upgrade.** The usual framing is: how do we accommodate people who think differently? That framing positions ND people as a cost to manage. The data here suggest a different frame: which modes does our default cognition systematically miss, and which neurodivergent modes catch them? Once you ask that question, hiring, team composition, idea-generation processes, and even meeting structure look different. You're not lowering a bar to let people through. You're noticing that the bar was measuring one cognitive dimension and missing several others.
+
+This isn't "ND is a superpower." That framing is glib and it gaslights the cost side. It's something more useful: **the dominant cognitive mode is one mode**, not the universal benchmark. It's good at certain things and bad at others. Other modes — including ones the clinical literature has been calling deficits — are good at the things the dominant mode is bad at. *That's not exceptional. That's just what variance is.*
+
+If you're an ND person reading this: the workshop scene that opens the piece was real, and your version of it probably is too. People weren't producing your outputs not because they weren't trying. They were running a different cognitive operation, allocated for depth where yours is allocated for spread. They aren't worse. You aren't better. Both modes have measurable signatures, and your signature has been treated as a defect for as long as anyone has been measuring it from outside. *The thing you do has a name and a measurable effect now.* That doesn't fix the cost. It does change what you can say out loud about the value.
+
+If you're a manager, a teacher, an investor, or any other person who builds the rooms ND people end up in: the right question isn't "how do we make these people fit." It's "what does our existing process miss, and which of these people catch it?" That's a different design problem. It's a more honest one. It's also one where you actually get something for your effort.
+
+## A research programme that's owned by the people who live it
+
+Tangent-return is one operation associated with one neurodivergent profile, tested on one task family. There are dozens of other articulable cognitive operations in adjacent communities: pattern-first reasoning, hyperfocus chains, sensory-detail anchoring, parallel-thread tracking, associative noticing, low-latency context-switching, exhaustive enumeration, the autistic-systematising "find the rule first" loop. Most of these can be operationalised in the same way. Each one is a falsifiable hypothesis. Each one costs $5 of API calls to test.
+
+The work that surfaces these operations is most naturally done by the people who *have* them and can describe them from inside. Not as research subjects. As researchers. There is no shortage of articulate ND people who can describe their own cognitive structure with high precision; the literature has just rarely treated those descriptions as data worth operationalising. This paper is one example of what happens when you do.
+
+The neurodiversity-in-AI literature so far has been mostly about access (do these tools work for ND users?) and bias (do these tools penalise ND inputs?). Both important. But there is a third register that has barely been touched: **neurodivergent cognition as engineering inspiration**. The data here suggest there's something there worth chasing.
 
 ---
 
