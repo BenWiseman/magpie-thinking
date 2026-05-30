@@ -1,0 +1,12 @@
+[
+  { "id": "brick",        "object": "brick" },
+  { "id": "paperclip",    "object": "paperclip" },
+  { "id": "newspaper",    "object": "newspaper" },
+  { "id": "tire",         "object": "car tire" },
+  { "id": "bucket",       "object": "bucket" },
+  { "id": "shoe",         "object": "shoe" },
+  { "id": "toothbrush",   "object": "toothbrush" },
+  { "id": "cardboard_box","object": "cardboard box" },
+  { "id": "pencil",       "object": "pencil" },
+  { "id": "spoon",        "object": "spoon" }
+]

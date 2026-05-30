@@ -6,6 +6,10 @@ Most "creative" LLM prompting either turns up the temperature or asks the model 
 
 The pattern is borrowed from how my own AuDHD (autism + ADHD) brain actually solves hard problems. The claim is that the cognitive operation is portable.
 
+> 📄 **For the empirical study with full methods, stats, and confound declarations:** [`writeup/paper.md`](writeup/paper.md)
+> ✍️ **For the lived-experience narrative version:** [`writeup/post.md`](writeup/post.md)
+> 🧪 **For the prompt you can paste anywhere:** [`prompts/tangent-return.md`](prompts/tangent-return.md)
+
 ## The claim being tested
 
 **H1.** A single agent running tangent-return thinking outperforms a default agent on divergent tasks (AUT, design briefs, multi-solution coding), and ties on convergent tasks (math, code-correctness).
@@ -67,12 +71,23 @@ Secondary metrics across all experiments: inter-output semantic distance (embedd
 ## Repo layout
 
 ```
+prompts/          drop-in prompts you can paste into any LLM
+skills/           Claude Code skills (~/.claude/skills/)
 R/                library functions (sourced, not packaged)
 experiments/      numbered study scripts — NN_short-name.R
 data/tasks/       input task instances
 results/          committed summary results, plots, tables
 writeup/          article(s) and figures
 ```
+
+## Just use it
+
+If you don't want to run the experiment and you just want to *try the prompt*:
+
+- **Copy-paste anywhere** — [`prompts/tangent-return.md`](prompts/tangent-return.md). Drop into your system prompt or prepend to your message. Works with Claude, GPT, Gemini, anything.
+- **Claude Code users** — copy [`skills/tangent-return/`](skills/tangent-return/) into `~/.claude/skills/` and invoke with `/tangent-return`.
+
+Both artefacts cite this repo when used — the empirical evidence lives here.
 
 ## Stack
 
@@ -97,7 +112,11 @@ Open `magpie-thinking.Rproj` in RStudio. Run commands land with the first commit
 
 ## Status
 
-**Pre-data.** The apparatus comes first; results follow. Null results will be published as null — this is not a marketing exercise.
+**Experiment 01 complete.** Single-agent tangent-return tested across 4 frontier models (Claude Sonnet 4.5, Claude Opus 4.5, GPT-4o, GPT-5) on the Alternative Uses Test. Three of four models show significant gains on originality and elaboration; the fourth is at ceiling. Full results in [`results/`](results/), preprint at [`writeup/paper.md`](writeup/paper.md), accessible writeup at [`writeup/post.md`](writeup/post.md).
+
+**Pending — and load-bearing for the cognitive-operation claim:** the limitations section of the paper names two confounds (token budget, in-prompt examples) that need direct ablations before the claim can be made cleanly. Those are experiment 01a/01b. After that, experiments 02-04 extend to inner-committee swarms and other divergent tasks (see [hypotheses](#the-claim-being-tested) below).
+
+Null results — for any of the above — will be published as null. This is not a marketing exercise.
 
 ## Acknowledgements
 
