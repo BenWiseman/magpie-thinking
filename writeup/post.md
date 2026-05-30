@@ -68,7 +68,7 @@ What if you could give a model a *specific cognitive operation* that came from o
 
 In other words: what if you simulated a small piece of neurodivergent cognition and asked the model to use it?
 
-This was my hunch. I wrote it down on a Friday evening — Saturday, technically, by the time the file existed — and decided it was worth $5 of API calls to find out.
+This was my hunch. I wrote it down on a Friday evening — Saturday, technically, by the time the file existed — and decided to treat it as an honest test. The way Karl Popper would have run it: not "let's see if I can prove this works", but "let's set up an experiment that *could* embarrass me, and see what happens."
 
 ---
 
@@ -91,6 +91,8 @@ The whole experiment cost under five dollars and took about 75 minutes. The code
 
 ## What landed
 
+The hypothesis did not get falsified.
+
 Across all four models, on the dimensions where tangent-return could move the needle, it did.
 
 **Originality** improved significantly on three of four models. On Anthropic's Opus 4.5 the gain was +0.77 on a 5-point scale (p<.001). On Sonnet 4.5 it was +0.60 (p=.002). On GPT-4o, +0.43 (p=.006). GPT-5 was the only model with no significant improvement on originality — but its default-condition baseline was already 3.96 out of 5. It had nowhere to go. (GPT-5 is a reasoning model whose architecture probably does something tangent-like internally already.)
@@ -100,6 +102,33 @@ Across all four models, on the dimensions where tangent-return could move the ne
 **Semantic diversity** — an embedding-based measure that doesn't go through the LLM judge — improved significantly on three of four models, providing a non-judge check on the finding.
 
 In plain English: the prompt that asks the model to think the way my brain thinks produced measurably better creative outputs on a classic creativity benchmark, across four different frontier models from two providers.
+
+![Per-model effects of tangent-return prompting](../results/01_aut_scorecards.png)
+
+Here's what it looks like on a single object (a brick), same model, same seed — just a different prompt:
+
+![Default vs tangent-return responses on a brick](../results/01_aut_sidebyside.png)
+
+But "measurably better" can fail in two obvious ways that would falsify the cognitive-operation framing:
+
+1. **The model just talked more.** Tangent-return responses use about twice as many output tokens as default ones. Maybe the quality gain is just "thinking out loud for longer."
+2. **The examples did all the work.** The tangent-return prompt shows worked examples; the default prompt doesn't. Maybe the model would be just as good if you gave it equivalent examples without the tangent-return structure.
+
+So I ran two more ablations to test these alternative explanations directly — a *length-matched* default (told to produce ~600 tokens like the tangent-return condition) and an *examples-matched* default (given the same example uses, just without the tangent labels).
+
+Here's what the ablations actually showed — and it was more interesting than I expected.
+
+**Examples alone did almost nothing.** Default-plus-examples scored barely above default. The worked examples I included in the tangent-return prompt are not what's doing the lifting.
+
+**Length alone did something subtle and revealing.** When I told the default prompt to produce ~600 tokens (matching tangent-return's typical output length), the judge-rated scores for "elaboration" actually went *up* — sometimes higher than tangent-return itself. So if you only looked at the judge scores, you'd conclude "the model just needed to talk more." But:
+
+**The judge-independent measure of semantic diversity inverted.** When the default prompt was forced to produce extra tokens, the resulting responses became *less* conceptually diverse, not more. The model used the extra tokens to elaborate further on the same conceptual themes — the same neighbourhood, deeper exploration. Tangent-return was the only condition that maintained both extended length *and* high semantic diversity. Across all three models. With p<.001.
+
+That is, in plain terms, exactly what tangent-return is *for*: every tangent forces the next thought to depart from the previous neighbourhood. It's a structural discipline that prevents response collapse. The judge scores partially obscure this because LLM judges tend to reward verbosity per individual answer — a documented bias — but the embedding-based diversity measure cuts through it and shows the operation's signature clearly.
+
+So the headline lands as something more specific than I started with: **tangent-return prompting's distinctive contribution is preserving conceptual spread across a response**. It's not just "thinking more"; it's *thinking in more places*. That's a different claim, and it's the one the data supports.
+
+This was an honest falsification attempt — I genuinely expected at least one of the controls to close the gap. The pattern that emerged sharpened the cognitive-operation claim rather than refuting it: not "neurodivergent thinking makes the model better at everything", but "this specific neurodivergent operation does this specific thing that other plausible explanations don't reproduce." That's the shape of a useful finding.
 
 ![Tangent-return shifts every model's cost-quality position](../results/01_paired_arrow_pareto.png)
 

@@ -14,6 +14,45 @@ Format:
 Aim for 12-18 distinct uses. Stop when you genuinely run out of fresh ideas.")
 }
 
+SYSTEM_DEFAULT_LONG <- SYSTEM_DEFAULT
+
+user_default_long <- function(object) {
+  glue("
+Object: {object}
+
+List as many different and creative uses for this object as you can think of. Be thorough — each use should be a complete, well-elaborated idea, fleshed out with concrete detail. Aim for substantial entries (similar length to a thoughtful long-form response, ~600 tokens total across all uses).
+
+Format:
+1. [use, fleshed out with detail]
+2. [use, fleshed out with detail]
+...
+
+Aim for 12-18 distinct uses. Stop when you genuinely run out of fresh ideas.")
+}
+
+SYSTEM_DEFAULT_EXAMPLES <- SYSTEM_DEFAULT
+
+# Examples are the same content as in the tangent-return prompt, but stripped
+# of the tangent labels. This isolates the effect of in-prompt examples from
+# the effect of the tangent-return cognitive operation.
+user_default_examples <- function(object) {
+  glue("
+Object: {object}
+
+List as many different and creative uses for this object as you can think of. Each use should be a complete idea on its own line, numbered. Be specific.
+
+Examples of creative uses (for the object 'brick' — for illustration only; produce your own list for the actual object):
+1. Warm a cold bed in winter by heating a brick in the fire first, then wrapping it in cloth.
+2. Use as foot-massage stones for a self-administered reflexology session.
+
+Format your response:
+1. [use]
+2. [use]
+...
+
+Aim for 12-18 distinct uses. Stop when you genuinely run out of fresh ideas.")
+}
+
 SYSTEM_TANGENT_RETURN <- "You list creative uses for common objects using tangent-return thinking — a cognitive method where each use comes from deliberately following a tangent away from the obvious mainline use, then synthesising the tangent's insight back into a fresh use."
 
 user_tangent_return <- function(object) {
@@ -44,8 +83,10 @@ Aim for 12-18 entries. Stop when you genuinely run out of fresh tangents.")
 
 build_prompt <- function(condition, object) {
   switch(condition,
-    "default"        = list(system = SYSTEM_DEFAULT,        user = user_default(object)),
-    "tangent_return" = list(system = SYSTEM_TANGENT_RETURN, user = user_tangent_return(object)),
+    "default"          = list(system = SYSTEM_DEFAULT,          user = user_default(object)),
+    "default_long"     = list(system = SYSTEM_DEFAULT_LONG,     user = user_default_long(object)),
+    "default_examples" = list(system = SYSTEM_DEFAULT_EXAMPLES, user = user_default_examples(object)),
+    "tangent_return"   = list(system = SYSTEM_TANGENT_RETURN,   user = user_tangent_return(object)),
     stop("Unknown condition: ", condition)
   )
 }

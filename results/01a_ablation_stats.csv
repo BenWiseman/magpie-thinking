@@ -1,0 +1,25 @@
+model_label,metric,comparison,n,mean_diff,p
+sonnet-4.5,originality,tangent_return vs default_long,10,0.33333333333333337,0.014956363910414203
+sonnet-4.5,originality,tangent_return vs default_examples,10,0.4666666666666667,0.00953461304130104
+sonnet-4.5,flexibility,tangent_return vs default_long,10,-0.033333333333333375,0.7976245209721026
+sonnet-4.5,flexibility,tangent_return vs default_examples,10,0.3,0.018719423349875704
+sonnet-4.5,elaboration,tangent_return vs default_long,10,-0.4999999999999999,8.702561863478781e-4
+sonnet-4.5,elaboration,tangent_return vs default_examples,10,0.33333333333333337,0.07381151280528565
+sonnet-4.5,semdiv,tangent_return vs default_long,10,0.22211725663201276,1.2855375959793566e-9
+sonnet-4.5,semdiv,tangent_return vs default_examples,10,0.05589513531041855,6.186356417970716e-4
+opus-4.5,originality,tangent_return vs default_long,10,0.1,0.0811261888458405
+opus-4.5,originality,tangent_return vs default_examples,10,0.36666666666666664,0.017438860908343307
+opus-4.5,flexibility,tangent_return vs default_long,10,0.03333333333333329,0.5910512317836049
+opus-4.5,flexibility,tangent_return vs default_examples,10,0.5000000000000001,0.002995777451398833
+opus-4.5,elaboration,tangent_return vs default_long,10,-0.23333333333333323,0.009534613041301054
+opus-4.5,elaboration,tangent_return vs default_examples,10,0.4666666666666668,0.006723515763058947
+opus-4.5,semdiv,tangent_return vs default_long,10,0.15277488006543596,2.9986646986312206e-6
+opus-4.5,semdiv,tangent_return vs default_examples,10,0.04322622018840174,0.007253940367820801
+gpt-4o,originality,tangent_return vs default_long,10,0.2666666666666666,0.06970737536955277
+gpt-4o,originality,tangent_return vs default_examples,10,0.4,0.012992786487757379
+gpt-4o,flexibility,tangent_return vs default_long,10,-0.09999999999999991,0.0811261888458405
+gpt-4o,flexibility,tangent_return vs default_examples,10,0,NA
+gpt-4o,elaboration,tangent_return vs default_long,10,0.2666666666666666,0.48200418266399825
+gpt-4o,elaboration,tangent_return vs default_examples,10,0.1333333333333333,0.22286835013352013
+gpt-4o,semdiv,tangent_return vs default_long,10,0.09855765172636133,2.768435077277068e-5
+gpt-4o,semdiv,tangent_return vs default_examples,10,0.013142454661998038,0.36724051431244686
