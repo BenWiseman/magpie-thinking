@@ -1,0 +1,32 @@
+# R
+.Rhistory
+.Rapp.history
+.RData
+.Ruserdata
+.Rproj.user/
+*-Ex.R
+
+# renv — commit lockfile + activate script, ignore the rest
+renv/library/
+renv/local/
+renv/cellar/
+renv/staging/
+renv/python/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Run artefacts — keep summaries in results/, dump raw runs here
+data/runs/
+*.jsonl.gz
+*.rds.gz
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
