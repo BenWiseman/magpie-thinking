@@ -2,6 +2,8 @@
 
 *A weekend experiment on whether the way some of us think is worth measuring.*
 
+![Magpie Thinking banner](../results/00_banner.png)
+
 ---
 
 ![Linear vs tangent-return cognitive paths](../results/01_concept_diagram.png)
