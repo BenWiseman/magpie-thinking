@@ -1,205 +1,191 @@
 # What my AuDHD brain accidentally taught an AI
 
-*On testing a hunch that cognitive patterns labelled "inefficient" might actually be doing something useful.*
+*A weekend experiment on whether the way some of us think is worth measuring.*
 
 ---
 
 ![Linear vs tangent-return cognitive paths](../results/01_concept_diagram.png)
 
-A few years into my last job, my managers started running workshops to figure out how I came up with ideas.
+A few years into my last job, my managers ran workshops to figure out how I came up with ideas.
 
-I wasn't doing anything special — at least it didn't feel that way to me. They'd present a problem, the room would work through it, and sometimes — not always — I'd say something that shifted the frame. Not the final answer, often; just an angle nobody else had noticed. Often something that, written down, looked obvious in retrospect. They wanted me to teach the team how I did it.
+I wasn't doing anything special. At least it didn't feel that way to me. We'd be working through a problem, the room would offer the standard suggestions, and sometimes (not always) I'd say a sentence that shifted what we were looking at. Usually not the final answer. Just an angle nobody had landed on. Written down later it would look obvious.
 
-I'm not a great teacher of this particular thing. The honest version of my answer was: I wasn't *trying* to find the answer. I was thinking about something else and the connection landed.
+The honest version of my answer when they asked how I did it was that I wasn't really trying. I was thinking about something else and the connection happened.
 
-That's roughly the moment I started understanding that my AuDHD brain — autism plus ADHD, two neurodivergent profiles that frequently co-occur — was doing something specific that other people weren't, and that it was visible from the outside as "where do these ideas come from?"
+I'm not a great teacher of this. The thing I do is involuntary and I can't really turn it off. That was around the time I started understanding that my AuDHD brain (autism plus ADHD, two profiles that show up together a lot) was doing something specific. From outside it was visible as "where do those ideas come from?". From inside it was just how thinking works.
 
-Years later I've decided to try and bottle it. Not for me — for AI.
+Years later I had a thought. What if I could prompt an LLM to do the same thing my brain does, and see if it produced better outputs?
 
-This post is about what happened when I prompted four large language models to think the way my brain thinks, and tested whether it measurably improved their outputs.
+A weekend of tinkering and five bucks of API calls later, I had an answer.
 
-The short answer: yes. Across three of the four models, with statistically significant improvements on the standard measure of divergent thinking, with the fourth (the most expensive reasoning model) already at ceiling. The code, data, and analysis are public at https://github.com/BenWiseman/magpie-thinking.
+Short version: across three of the four frontier models I tested, prompting the model to think in the AuDHD pattern produced statistically significant improvements on the standard psychometric measure of divergent thinking. The fourth model (the most expensive reasoning one) was already at ceiling, so there was nowhere to go. Repo, code, data, prompt: [github.com/BenWiseman/magpie-thinking](https://github.com/BenWiseman/magpie-thinking).
 
-The longer answer is in the rest of this post, because I think *why* it works is more interesting than *that* it works.
-
----
-
-## The pattern, in plain terms
-
-Here's what's happening in my head when I'm thinking about a problem.
-
-There's a mainline thought — the problem itself. I'm holding it. But almost immediately, the topic triggers a tangent. Something the problem reminds me of. Not a related thought; an associated one. A property, a memory, a piece of a song lyric, a thing I read about ant colonies in 2014, the way light fell in a particular room.
-
-The tangent is loud. It demands a few seconds of attention. I follow it — briefly, voluntarily.
-
-And then — this is the part I think matters — the tangent comes back. I extract whatever insight it had and bring it home to the mainline, carrying that insight with me. The mainline is now slightly different. I'm thinking about the same problem, but with a new ingredient.
-
-Then another tangent. Then another. Mainline → tangent → synthesise → return. Loop.
-
-If you read about ADHD in older clinical literature, this gets labelled "tangential thinking" — and treated as a deficit. The clinical observer sees the tangent and assumes the train of thought has derailed. But from inside, the *return* is the productive move. It's what makes the tangents worth taking. Without the return it would just be distraction. With the return it's something else.
-
-I think of it as graph traversal, not linear reasoning. A chain of thought is a chain — A leads to B leads to C, single track. What my brain does looks more like a graph: there's a trunk, but every node spawns branches that return to update the trunk before the next step. The shape is a tree that keeps folding back into itself.
-
-This is also what most AuDHD people I know describe when they describe how they think, with their own metaphors. I'm calling it *tangent-return thinking*. The word for the bird that collects shiny things from everywhere and brings them back to the nest is *magpie*, which is what I called the project.
+The longer version is more interesting. Stay with me.
 
 ---
 
-## What it costs
+## The pattern, plainly
 
-I don't want to write the "neurodiversity superpower" version of this post. That version is glib and it's not how the experience feels. The pattern has real costs.
+Here's what happens in my head when I'm working on a problem.
 
-I'm tired most evenings. Holding mainlines while following tangents takes cognitive load — more than I'd otherwise spend, I think, though I have nothing to compare it to. Conversations with neurotypical people are often a friction surface: they're following a single thread, I'm following six, and the part I say out loud sometimes lands as a non-sequitur. Sometimes it lands as the thing they actually needed to hear; sometimes it lands as a non-sequitur and the moment passes and I have to look interested in the original thread again. It's a guess each time.
+There's a mainline thought, which is the problem. I'm holding it. Then almost immediately the topic triggers something else. Not a related thought, an associated one. A property of the object. A memory. The way light fell in a particular room. Something I read about ant colonies in 2014. The tangent is loud and it demands a few seconds.
 
-The constant synthesis is hard to switch off. I sleep badly. I get overstimulated. Crowded rooms are expensive. There are real reasons that "ADHD" and "autism" are clinical labels — they describe patterns that, in some environments, are genuinely costly to run.
+I follow it briefly. And then, and this is the part that matters, I bring whatever it had back to the mainline. The mainline is now slightly different. I'm working on the same problem but with a new ingredient. Then another tangent. Then another.
 
-But here's the thing the clinical framing tends to miss: the same machinery that costs me in the wrong environments produces real outputs in the right ones. Workshops to extract my process were happening because the *outputs* were valued. The pattern wasn't a deficit being graciously accommodated; it was a productive operation that the rest of the team wanted to learn from. That's a meaningful distinction. It changes whether the pattern is something to be fixed or something to be understood.
+Mainline. Tangent. Synthesise. Return. Loop.
 
-I'm interested in the understanding side.
+In older clinical literature this gets labelled tangential thinking and treated as a deficit. The observer sees the tangent and concludes the train of thought has come off the rails. That's accurate for what they're observing. They're not observing the return, because the return happens inside someone's head. From outside it looks like luck. Sometimes the tangent-thinker says something useful and they can't quite explain how. People run workshops.
+
+I think of it as graph traversal rather than linear reasoning. A chain of thought is a chain: A leads to B leads to C, single track. What my brain does looks more like a graph. There's a trunk, but every node spawns branches that come back and update the trunk before the next step. A tree that keeps folding back into itself.
+
+Most AuDHD people I know describe their version of this in their own metaphors. I'm calling mine tangent-return thinking. The bird that collects shiny things from everywhere and brings them back to the nest is a magpie, which is what I called the project.
+
+---
+
+## The cost
+
+I'm not writing the "neurodiversity superpower" version of this post. Anyone who tells you their wiring is unambiguously a gift is selling you something. The pattern has real costs.
+
+I'm tired most evenings. Holding mainlines while following tangents is expensive on whatever the cognitive load equivalent of calories is. Conversations with people who think in straight lines are a tax. They're following one thread and I'm following six, and sometimes what comes out of my mouth lands as a non-sequitur. Sometimes it lands as the thing they actually needed to hear. It's a guess each time and I get it wrong often enough.
+
+I sleep badly. I get overstimulated. Crowded rooms are expensive. There are real reasons that ADHD and autism are clinical labels. They describe patterns that, in some environments, are genuinely costly to run.
+
+But the cost has been the only thing the literature measured for about a century. The same machinery that costs you in the wrong environment produces things in the right one. The workshops were happening because the outputs were valued, not because the cost was being graciously accommodated. That's a meaningful distinction, and it's the one I've spent the last few years thinking about.
 
 ---
 
 ## The hunch
 
-Large language models are trained on aggregate text from humans. They tend, by default, toward the modal response — the answer most people would give. That's a useful inductive bias for problems with one right answer. It's a corrosive bias for problems where the value is in the tail.
+LLMs are trained on aggregate human text. By default they reach for the modal answer, the one most people would give. That's a useful inductive bias for problems with one right answer. It's a corrosive bias for problems where the value is in the tail.
 
-The standard prompting tricks for creative tasks are basically louder versions of "be creative": turn up temperature, ask for many ideas, run best-of-N. These all push outputs away from the centre but they don't say *where* to push, or *how*. They make the model noisier, not differently shaped.
+The standard prompting tricks for creative tasks are louder versions of "be creative". Turn up the temperature. Ask for more ideas. Run best-of-N. All of these push the model away from the centre but none of them say where to push, or how. They make the model noisier rather than differently shaped.
 
-What if you could give a model a *specific cognitive operation* that came from outside its training distribution? What if you could prompt it to think in a way that's well-articulated by people who actually think that way?
+The hunch I was sitting with was this. What if you gave the model a *specific cognitive operation*, articulated by someone who actually does it that way? Not "be more creative". The actual structural thing my brain does.
 
-In other words: what if you simulated a small piece of neurodivergent cognition and asked the model to use it?
-
-This was my hunch. I wrote it down on a Friday evening — Saturday, technically, by the time the file existed — and decided to treat it as an honest test. The way Karl Popper would have run it: not "let's see if I can prove this works", but "let's set up an experiment that *could* embarrass me, and see what happens."
+So one Friday night I wrote it down as a falsifiable hypothesis and decided to do an honest test. The Popper version, not the marketing version. Set up an experiment that could embarrass me, then see what happens.
 
 ---
 
 ## The experiment
 
-I tested four frontier large language models:
+Four frontier large language models:
 
-- **Claude Sonnet 4.5** (Anthropic, mid-tier)
-- **Claude Opus 4.5** (Anthropic, flagship)
-- **GPT-4o** (OpenAI, mid-tier)
-- **GPT-5** (OpenAI, flagship reasoning model)
+- Claude Sonnet 4.5 (Anthropic, mid-tier)
+- Claude Opus 4.5 (Anthropic, flagship)
+- GPT-4o (OpenAI, mid-tier)
+- GPT-5 (OpenAI, flagship reasoning model)
 
-Two conditions per model: a *default* prompt asking for creative uses of an everyday object, and a *tangent-return* prompt that operationalises the loop I described above — start from the obvious mainline, deliberately follow a tangent, synthesise the tangent back, list the use that follows, repeat.
+Two conditions per model. A default prompt asking for creative uses of an everyday object. A tangent-return prompt that operationalises the loop: start from the obvious mainline use, follow a tangent, synthesise it back, list the use that comes out, repeat.
 
-I used the Alternative Uses Test — a 60-year-old psychology measure of divergent thinking. Pick an object (a brick, a paperclip, a newspaper, a shoe) and list creative uses. Performance is scored on fluency (how many), originality (how uncommon), flexibility (how varied), and elaboration (how specific). I used ten standard objects, three repeated samples per object per condition, scored by an independent LLM judge using a structured rubric, with embedding-based cross-validation.
+The benchmark was the Alternative Uses Test, a 60-year-old psychology measure of divergent thinking. Pick an object (brick, paperclip, newspaper, shoe), list creative uses. Score on fluency, originality, flexibility, elaboration. Ten objects, three repeated samples per condition, scored by an independent LLM judge using a structured rubric, with embedding-based cross-validation.
 
-The whole experiment cost under five dollars and took about 75 minutes. The code, data, analysis, and the actual prompt you can copy and paste into your own chats are at the GitHub link above.
+The whole thing cost under five dollars and took about 75 minutes. The prompts, code, and data are at the repo.
 
 ---
 
 ## What landed
 
-The hypothesis did not get falsified.
+The hypothesis didn't get falsified.
 
-Across all four models, on the dimensions where tangent-return could move the needle, it did.
-
-**Originality** improved significantly on three of four models. On Anthropic's Opus 4.5 the gain was +0.77 on a 5-point scale (p<.001). On Sonnet 4.5 it was +0.60 (p=.002). On GPT-4o, +0.43 (p=.006). GPT-5 was the only model with no significant improvement on originality — but its default-condition baseline was already 3.96 out of 5. It had nowhere to go. (GPT-5 is a reasoning model whose architecture probably does something tangent-like internally already.)
-
-**Flexibility** and **elaboration** improved on Opus 4.5 and Sonnet 4.5 with p<.001 on at least one of the two. GPT-4o improved significantly on elaboration. GPT-5 sat at ceiling.
-
-**Semantic diversity** — an embedding-based measure that doesn't go through the LLM judge — improved significantly on three of four models, providing a non-judge check on the finding.
-
-In plain English: the prompt that asks the model to think the way my brain thinks produced measurably better creative outputs on a classic creativity benchmark, across four different frontier models from two providers.
+Across three of four models, tangent-return significantly improved originality. On Opus 4.5 the gain was +0.77 on a 5-point scale (p<.001). On Sonnet 4.5, +0.60 (p=.002). On GPT-4o, +0.43 (p=.006). GPT-5 was already scoring 3.96 out of 5 in the default condition, so it had nowhere to climb on that metric. Same story for elaboration and flexibility. The judge-independent embedding measure of semantic diversity also improved significantly on three of four models, which matters because LLM judges can be biased and embeddings can't.
 
 ![Per-model effects of tangent-return prompting](../results/01_aut_scorecards.png)
 
-Here's what it looks like on a single object (a brick), same model, same seed — just a different prompt:
+Here's what it looks like on a single object (a brick), same model, same seed, just a different prompt:
 
 ![Default vs tangent-return responses on a brick](../results/01_aut_sidebyside.png)
 
-But "measurably better" can fail in two obvious ways that would falsify the cognitive-operation framing:
+In plain English, the prompt that asks the model to think the way my brain thinks produced measurably better creative outputs on a classic benchmark across four different frontier models from two different providers.
 
-1. **The model just talked more.** Tangent-return responses use about twice as many output tokens as default ones. Maybe the quality gain is just "thinking out loud for longer."
-2. **The examples did all the work.** The tangent-return prompt shows worked examples; the default prompt doesn't. Maybe the model would be just as good if you gave it equivalent examples without the tangent-return structure.
+But I wasn't ready to call this done. "Measurably better" can fail in two boring ways that would falsify the cognitive-operation framing:
 
-So I ran two more ablations to test these alternative explanations directly — a *length-matched* default (told to produce ~600 tokens like the tangent-return condition) and an *examples-matched* default (given the same example uses, just without the tangent labels).
+1. The model just talked more. Tangent-return responses use about twice the output tokens of default ones. Maybe the quality gain is just thinking out loud for longer.
+2. The worked examples in the tangent-return prompt did all the lifting. Few-shot prompting is well-documented. Maybe the structure didn't matter, just the demonstrations.
 
-Here's what the ablations actually showed — and it was more interesting than I expected.
+So I ran two more ablation conditions. One was a length-matched default, instructed to produce around 600 tokens (matching tangent-return's typical length). The other was an examples-matched default, given the same example uses as tangent-return but with the tangent labels stripped.
 
-**Examples alone did almost nothing.** Default-plus-examples scored barely above default. The worked examples I included in the tangent-return prompt are not what's doing the lifting.
+This is where it got interesting.
 
-**Length alone did something subtle and revealing.** When I told the default prompt to produce ~600 tokens (matching tangent-return's typical output length), the judge-rated scores for "elaboration" actually went *up* — sometimes higher than tangent-return itself. So if you only looked at the judge scores, you'd conclude "the model just needed to talk more." But:
+Examples alone did almost nothing. Default-plus-examples scored barely above default. The worked examples in the tangent-return prompt are not what's doing the work.
 
-**The judge-independent measure of semantic diversity inverted.** When the default prompt was forced to produce extra tokens, the resulting responses became *less* conceptually diverse, not more. The model used the extra tokens to elaborate further on the same conceptual themes — the same neighbourhood, deeper exploration. Tangent-return was the only condition that maintained both extended length *and* high semantic diversity. Across all three models. With p<.001.
+Length alone did something subtle and revealing. When I gave the default prompt the "produce 600 tokens" instruction, the judge scores for elaboration actually went up. Sometimes higher than tangent-return itself. So if you only looked at the judge scores, you'd conclude the model just needed to talk more.
 
-That is, in plain terms, exactly what tangent-return is *for*: every tangent forces the next thought to depart from the previous neighbourhood. It's a structural discipline that prevents response collapse. The judge scores partially obscure this because LLM judges tend to reward verbosity per individual answer — a documented bias — but the embedding-based diversity measure cuts through it and shows the operation's signature clearly.
+But then I looked at semantic diversity. When the default prompt was forced to produce extra tokens, the responses became *less* conceptually diverse, not more. The model used the extra tokens to elaborate further on the same conceptual themes. Same neighbourhood, deeper exploration. Tangent-return was the only condition that maintained both extended length and high semantic diversity across all three models, with p < 0.001.
 
-So the headline lands as something more specific than I started with: **tangent-return prompting's distinctive contribution is preserving conceptual spread across a response**. It's not just "thinking more"; it's *thinking in more places*. That's a different claim, and it's the one the data supports.
+![Ablation comparison across all four conditions](../results/01a_ablation_comparison.png)
 
-This was an honest falsification attempt — I genuinely expected at least one of the controls to close the gap. The pattern that emerged sharpened the cognitive-operation claim rather than refuting it: not "neurodivergent thinking makes the model better at everything", but "this specific neurodivergent operation does this specific thing that other plausible explanations don't reproduce." That's the shape of a useful finding.
+Which is exactly what tangent-return is structurally for. Every tangent forces the next thought to depart from the previous neighbourhood. It's a discipline that prevents response collapse. The LLM judge partly obscures this because judges tend to reward verbosity per individual answer (a documented bias), but the embedding measure cuts through and shows the operation's signature plainly.
+
+So the headline I started with was wrong, in a useful way. It's not "tangent-return makes the model better at everything". It's something more specific: tangent-return preserves conceptual spread across a response in a way that nothing else replicates. It's not thinking more, it's thinking in more places.
+
+That's the shape of a real finding. I went in trying to falsify, ran two of the most obvious confound-controlled experiments, and what survived was more specific and more defensible than the claim I started with.
+
+---
+
+## The cost-quality kicker
+
+There's a practical consequence I didn't anticipate.
+
+GPT-5 won the default-condition comparison cleanly. With no creative prompting beyond "list uses", it produced the highest-quality outputs by a meaningful margin. But GPT-5 is expensive. A single AUT response from GPT-5 costs around $0.075. A response from Sonnet 4.5 costs $0.0055. Roughly 14 times cheaper.
+
+Add tangent-return prompting to Sonnet and its composite quality climbs to 4.38 out of 5. GPT-5's default-condition composite is 4.62. That's 95% of the quality at 15% of the cost.
+
+Prompting Claude like an AuDHD brain produces output competitive with the flagship reasoning model at one-seventh the cost. I let that one sit for a few days.
 
 ![Tangent-return shifts every model's cost-quality position](../results/01_paired_arrow_pareto.png)
 
----
-
-## The kicker
-
-There's a practical corollary that I didn't expect.
-
-GPT-5 won the default-condition comparison cleanly. With no creative prompting beyond "list uses", GPT-5 produced the highest-quality outputs by a meaningful margin.
-
-But GPT-5 is **expensive**. At current pricing, a single AUT response from GPT-5 costs around $0.075. A response from Claude Sonnet 4.5 costs around $0.0055 — roughly 14× cheaper.
-
-When you add tangent-return prompting to Sonnet, its composite quality (averaging originality, flexibility, and elaboration) climbs to 4.38 out of 5. GPT-5's default-condition composite quality is 4.62. That's 95% of the quality, at about 15% of the cost.
-
-So: prompting Claude like an AuDHD brain produces output competitive with the flagship reasoning model at one-seventh the cost.
-
-That cost curve is the part that matters most for people building things. If you're running a small team and trying to do creative work at scale — design exploration, content generation, rapid iteration — this is the difference between feasible and not. Most of the value created with AI right now is constrained by what you can afford to run, not by what the best model can do. Tangent-return shifts that constraint by an order of magnitude on the kinds of work where it applies.
+That curve is what matters for anyone actually building things. If you're a small team trying to do creative work at scale, the constraint is usually what you can afford to run, not what the best model can do in absolute terms. Tangent-return shifts that constraint by an order of magnitude on the work where it applies.
 
 ---
 
-## What this means for AI
+## What I think this actually says
 
-Stripping the result to its load-bearing sentence: **tangent-return prompting is the only condition we tested that preserves conceptual spread across an LLM's response.** Every other tested intervention — extra examples, extra tokens, more elaborate per-use detail — left the model elaborating within the same conceptual neighbourhood. Tangent-return is what makes it leave.
+Let me try to land what I think the result says about the world, because I've been chewing on it for a few days and I want to get it right.
 
-That's a more specific claim than "this prompt is better" and a more useful one. It tells you when to reach for the operation (open-ended exploration, novel angles, brainstorming, design surface searches) and when it'll waste your money (single-right-answer tasks, fact lookup, math). It tells you why pure "be creative" prompting underperforms — it asks for an output property without specifying the cognitive operation that produces it. And it identifies a measurable signature you can use to test whether other neurodivergent operations do similar work.
+For about a century, tangent-return has been treated as a clinical symptom. The shorthand is that this person isn't focused, can't stay on topic, isn't being productive the way we measure productive. That's accurate for what an external observer can see. The observer sees the tangent. They don't see the return, because the return happens inside someone's head. From outside it looks like luck.
 
-For practical AI use, the implication is concrete. The dominant prompting toolkit treats the model as a single reasoner to be coaxed louder. The data here suggest a different posture: specify the cognitive *operation*, not the desired *property*. There are entire communities of people who can articulate cognitive operations from inside — and some of those operations work on machines as well as they work on us.
+What the data here say, at a level of empirical precision I don't think has been reached before, is that the return is doing measurable work that nothing else does. Not "creativity" in a soft sense. A specific structural thing.
 
-## What this means for neurodivergent people
+When you give a thinker extra cognitive bandwidth, the default mode uses it to go deeper on whatever it already said. The tangent-return mode uses it to go somewhere new. Same neighbourhood versus different neighbourhood. Depth versus spread.
 
-I want to land this carefully because it's the part I actually care about.
+Neither is better. They're allocated differently.
 
-Tangent-return has been pathologised in psychiatric literature for decades. "Tangential thinking" is a clinical sign. The framing assumes the observer can't see why the tangent was taken — and so the tangent is treated as a derailment of thought, full stop. The *return*, when it happens, is invisible to that observer. From inside, the return is the whole point. From outside, the return looks like luck.
+That sentence is the one I want to land.
 
-What the data here say, for the first time at this level of empirical precision, is that **the return is doing measurable work that nothing else replicates**. It's not "creativity" in a vague sense. It's a specific structural property: when given extended bandwidth to think, the tangent-return pattern uses that bandwidth to *travel to new conceptual neighbourhoods* rather than to dig further into the one it's already in. The dominant cognitive pattern, when given the same bandwidth, goes deeper. Neither is better in the abstract — they're **allocated differently**.
+The dominant cognitive pattern goes deeper when given more bandwidth. The neurodivergent pattern goes wider. Neither is better. Both are doing real work. They're doing different work, and the difference is structural, not effortful.
 
-That distinction matters enormously, and it's the part that's been missing from the conversation.
+Most workplaces and schools have only ever measured the cost. Sleep, friction, executive function load, the social tax of saying the non-obvious thing in a meeting where everyone else is converging on the obvious thing. Those costs are real. They're real for me. I don't want to gaslight anyone about them.
 
-**Most workplaces and schools have only ever measured the cost.** Sleep disturbance, conversational misalignment, executive function load, the social tax of saying the non-obvious thing in a meeting. Those costs are real — they're real for me — and I don't want to pretend otherwise. But the value has been treated as anecdote, or as exception, or as "well, *that* particular person is special". This experiment is one data point on the value side of the ledger. The pattern produces a structural property that conventional cognition, when matched on compute, does not produce. That isn't anecdote. It's a measurement.
+But the value has been treated as anecdote for a hundred years. "Well, that particular person is special." Or as exception, or as the thing the workshops were trying to extract without quite naming. This experiment is one data point on the other side of the ledger. The pattern produces a structural property that conventional cognition, matched on every confound we tested, does not produce. That isn't anecdote. It's a measurement, with p < 0.001 across three frontier LLMs from two providers.
 
-**If your work needs spread, not just depth, the dominant cognitive pattern has been costing you something you couldn't see.** That covers more domains than most leadership realises: novel-product exploration, finding the right framing of a problem, generating alternative interpretations of data, design across constraint spaces, organisational change, hiring rubrics that don't already exist. The list of jobs that benefit from spread is long. The list of jobs where ND people are reflexively flagged for "not fitting the process" overlaps with it.
+If your work needs spread, not just depth, the dominant cognitive pattern has been quietly costing you something you couldn't see. That covers more domains than most leadership realises. Finding the right framing of a problem. Generating alternative interpretations of data. Design across constraint spaces. Organisational change. Hiring processes for roles that don't have rubrics yet. The list of jobs that need spread is long, and it overlaps a lot with the list of jobs where ND people get flagged for "not fitting the process".
 
-**The inclusion conversation needs an upgrade.** The usual framing is: how do we accommodate people who think differently? That framing positions ND people as a cost to manage. The data here suggest a different frame: which modes does our default cognition systematically miss, and which neurodivergent modes catch them? Once you ask that question, hiring, team composition, idea-generation processes, and even meeting structure look different. You're not lowering a bar to let people through. You're noticing that the bar was measuring one cognitive dimension and missing several others.
+The inclusion conversation needs an upgrade. The dominant framing is "how do we accommodate people who think differently", which positions ND people as a cost to manage. The data here suggest a better question: what modes does our default cognition systematically miss, and which neurodivergent modes catch them? Once you start asking that question, hiring looks different. Team composition looks different. Meeting structure looks different. You're not lowering a bar to let people through. You're noticing that the bar was measuring one cognitive dimension and ignoring four others.
 
-This isn't "ND is a superpower." That framing is glib and it gaslights the cost side. It's something more useful: **the dominant cognitive mode is one mode**, not the universal benchmark. It's good at certain things and bad at others. Other modes — including ones the clinical literature has been calling deficits — are good at the things the dominant mode is bad at. *That's not exceptional. That's just what variance is.*
+If you're an ND person reading this: the workshop scene I opened with was real. Your version of it probably is too. The people in the room who weren't producing your outputs weren't trying less hard. They were running a different cognitive operation, allocated for depth where yours is allocated for spread. They aren't worse. You aren't better. Both modes have measurable signatures now, and yours has been treated as a defect for as long as anyone has been measuring it from outside. The thing you do has a name and an effect now. That doesn't fix the cost. It does change what you can say out loud about the value.
 
-If you're an ND person reading this: the workshop scene that opens the piece was real, and your version of it probably is too. People weren't producing your outputs not because they weren't trying. They were running a different cognitive operation, allocated for depth where yours is allocated for spread. They aren't worse. You aren't better. Both modes have measurable signatures, and your signature has been treated as a defect for as long as anyone has been measuring it from outside. *The thing you do has a name and a measurable effect now.* That doesn't fix the cost. It does change what you can say out loud about the value.
+If you're a manager, a teacher, a founder, an investor, or anyone else who builds the rooms ND people end up in: the question I'd want you to take from this isn't "how do we make these people fit". It's "what does our existing process miss, and which of these people catch it?". The honest answer changes hiring, meeting structure, who gets credit for the thing nobody else thought of, and probably what gets built.
 
-If you're a manager, a teacher, an investor, or any other person who builds the rooms ND people end up in: the right question isn't "how do we make these people fit." It's "what does our existing process miss, and which of these people catch it?" That's a different design problem. It's a more honest one. It's also one where you actually get something for your effort.
+---
 
-## A research programme that's owned by the people who live it
+## What I'd love to see next
 
-Tangent-return is one operation associated with one neurodivergent profile, tested on one task family. There are dozens of other articulable cognitive operations in adjacent communities: pattern-first reasoning, hyperfocus chains, sensory-detail anchoring, parallel-thread tracking, associative noticing, low-latency context-switching, exhaustive enumeration, the autistic-systematising "find the rule first" loop. Most of these can be operationalised in the same way. Each one is a falsifiable hypothesis. Each one costs $5 of API calls to test.
+Tangent-return is one operation associated with one neurodivergent profile, tested on one task family. There are more. Pattern-first reasoning. Hyperfocus chains. Sensory-detail anchoring. Parallel-thread tracking. Associative noticing. The autistic "find the rule first" loop. Most of them are articulable, falsifiable, and cost about five bucks of API calls each to test honestly.
 
-The work that surfaces these operations is most naturally done by the people who *have* them and can describe them from inside. Not as research subjects. As researchers. There is no shortage of articulate ND people who can describe their own cognitive structure with high precision; the literature has just rarely treated those descriptions as data worth operationalising. This paper is one example of what happens when you do.
-
-The neurodiversity-in-AI literature so far has been mostly about access (do these tools work for ND users?) and bias (do these tools penalise ND inputs?). Both important. But there is a third register that has barely been touched: **neurodivergent cognition as engineering inspiration**. The data here suggest there's something there worth chasing.
+The people best placed to do that work are the ones who run those operations themselves. Not as research subjects. As researchers. There's no shortage of articulate ND people who can describe their own cognitive structure with high precision. There's just a shortage of formats that treat those descriptions as data instead of as backstory. This piece is one small attempt at building that format. The repo is open. The prompt is yours to use. If you run another operation worth testing, I'm easy to find.
 
 ---
 
 ## Try it yourself
 
-The prompt is short and you can paste it into ChatGPT, Claude, Gemini, or any chat interface. It's at https://github.com/BenWiseman/magpie-thinking/blob/main/prompts/tangent-return.md and licensed for any use.
+The prompt is short. Paste it into ChatGPT, Claude, Gemini, any chat interface. It's at [github.com/BenWiseman/magpie-thinking/blob/main/prompts/tangent-return.md](https://github.com/BenWiseman/magpie-thinking/blob/main/prompts/tangent-return.md) and licensed for any use.
 
-If you're a Claude Code user, the same operation is packaged as a drop-in skill at https://github.com/BenWiseman/magpie-thinking/tree/main/skills/tangent-return.
+For Claude Code users, the same operation is packaged as a drop-in skill at [github.com/BenWiseman/magpie-thinking/tree/main/skills/tangent-return](https://github.com/BenWiseman/magpie-thinking/tree/main/skills/tangent-return).
 
-The full preprint with stats, methods, references, and the cost-versus-quality Pareto analysis is in the same repository under [`writeup/paper.md`](paper.md). It's not peer-reviewed; it's a citable artefact that explains exactly what was done so others can replicate or contest it. The paper also lists confounds I haven't yet resolved — read that section before drawing strong conclusions.
+The full preprint with stats, methods, references, and the confounds I haven't yet resolved is in the same repository under [writeup/paper.md](paper.md). It's not peer-reviewed. It explains what was done so others can replicate or contest it.
 
-If the prompt works for you on something interesting, I'd love to know. If it doesn't, I'd love to know that too. Null results are part of the picture.
+If the prompt works for you on something interesting I'd love to know. If it doesn't, I'd love to know that too. Null results are part of the picture.
 
 ---
 
-*Thanks for reading. The longer I think about cognition the more convinced I get that "inefficient" is doing a lot of unexamined work in how we describe minds — both human and artificial. The next experiment in this series tests whether a swarm of agents each running tangent-return from a different cognitive vantage outperforms a clone swarm. If you want updates when that lands, follow along on the repo.*
+*The longer I sit with this the more convinced I am that "inefficient" is doing a lot of unexamined work in how we describe minds, human and artificial. Next experiment tests whether a swarm of agents each running tangent-return from a different cognitive vantage outperforms a clone swarm. Repo subscribe button is where you'd expect it.*
