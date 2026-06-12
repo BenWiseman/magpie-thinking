@@ -9,7 +9,7 @@
 
 ## Abstract
 
-Large language models trained on aggregate human text default to the centroid of their training distribution — a useful inductive bias for convergent tasks but a corrosive one for divergent tasks, where novelty is the unit of value. We posed an empirically testable hypothesis: *simulating cognitive operations associated with neurodivergent thinking improves LLM performance on divergent tasks*. We operationalised one such operation, **tangent-return thinking** (mainline thought → deliberate tangent → synthesised return), drawn from the AuDHD (autism + ADHD) associative-loop pattern, and constructed a falsification attempt: four frontier models (Claude Sonnet 4.5, Claude Opus 4.5, GPT-4o, GPT-5), the Alternative Uses Test (a 60-year-old standard measure of divergent thinking), and pre-specified scoring criteria. **The hypothesis was not falsified: in three of four models, tangent-return prompting produced significant paired-test improvements in originality and elaboration (p<.01); the fourth (GPT-5) showed ceiling effects.** We then constructed two further falsification attempts targeting confounds the main experiment could not rule out — a *length-matched* control (default prompt instructed to ~600 tokens) and an *examples-matched* control (default prompt with the same worked examples used in the tangent-return prompt, with tangent labels stripped). **Both null hypotheses were rejected on the judge-independent metric of semantic diversity (p<.001 across all three models tested)**, and length-matching, far from explaining the effect, *inverted* the diversity outcome — the model uses extra tokens to elaborate on the same conceptual neighbourhood rather than to find new ones. We interpret these results as moderate-to-strong evidence for a refined claim: **tangent-return's unique contribution is structural-divergence preservation across the response**, not "more creative" per se. A practical corollary: mid-tier models running the operation reach 95% of flagship default quality at ~15% of the cost. This is an existence proof for neurodiversity-informed AI research as a productive empirical direction.
+Large language models trained on aggregate human text default to the centroid of their training distribution — a useful inductive bias for convergent tasks but a corrosive one for divergent tasks, where novelty is the unit of value. We posed an empirically testable hypothesis: *simulating cognitive operations associated with neurodivergent thinking improves LLM performance on divergent tasks*. We operationalised one such operation, **tangent-return thinking** (mainline thought → deliberate tangent → synthesised return), drawn from the AuDHD (autism + ADHD) associative-loop pattern, and constructed a falsification attempt: four frontier models (Claude Sonnet 4.5, Claude Opus 4.5, GPT-4o, GPT-5), the Alternative Uses Test (a 60-year-old standard measure of divergent thinking), and pre-specified scoring criteria. **The hypothesis was not falsified: in three of four models, tangent-return prompting produced significant paired-test improvements in originality and elaboration (p<.01); the fourth (GPT-5) showed ceiling effects.** We then constructed two further falsification attempts targeting confounds the main experiment could not rule out — a *length-matched* control (default prompt instructed to ~600 tokens) and an *examples-matched* control (default prompt with the same worked examples used in the tangent-return prompt, with tangent labels stripped). **Both null hypotheses were rejected on the judge-independent metric of semantic diversity (p<.001 across all three models tested)**, and length-matching, far from explaining the effect, *inverted* the diversity outcome — the model uses extra tokens to elaborate on the same conceptual neighbourhood rather than to find new ones. We interpret these results as moderate-to-strong evidence for a refined claim: **tangent-return's unique contribution is structural-divergence preservation across the response**, not "more creative" per se. A subsequent DeepSeek sweep, scored by the same Sonnet 4.5 judge, moved the cost frontier: DeepSeek V4 Pro + tangent-return scored above GPT-5 default and GPT-5 + tangent-return at roughly 97x and 170x lower generation cost, respectively. That result is model-dependent, not universal: V4 Pro benefits from the operation; V4 Flash is strongest as a cheap default route. The broader claim is that neurodiversity-informed AI research can generate testable, useful prompting operations when the claims are kept empirical.
 
 **Keywords:** divergent thinking, prompting, neurodiversity, cognitive operations, Alternative Uses Test, chain-of-thought variants
 
@@ -78,6 +78,14 @@ A 4 × 2 × 10 × 3 factorial design:
 - **3 seeds per cell:** repeated sampling at temperature 1.0 (for non-reasoning models)
 
 Total: 240 attempted agent calls; 233 successful (7 GPT-5 calls dropped on transient errors).
+
+### 3.2.1 DeepSeek extension
+
+After the original four-model run, we repeated the same AUT design on DeepSeek API routes: `deepseek-chat`, `deepseek-v4-flash`, `deepseek-reasoner`, and `deepseek-v4-pro`, with V4 thinking disabled where the API exposed that control. The design was again 2 conditions × 10 tasks × 3 seeds per route, for 240 responses; all 240 completed.
+
+Availability note: during this API window, `/models` exposed `deepseek-v4-flash` and `deepseek-v4-pro`; `deepseek-chat` and `deepseek-reasoner` were accepted but returned `deepseek-v4-flash` in the response metadata. Common V3/R1 spellings were not available on this key. We therefore report the accepted route labels, and retain returned-model metadata in the parsed results.
+
+DeepSeek responses were postprocessed through the same parser, the same `claude-sonnet-4-5` judge, and the same embedding diversity metric used in the original analysis. Judge scoring was checkpointed row-by-row to disk and run with parallel socket workers; completed rows are reused on retry, so a single failure cannot invalidate prior paid scoring. Nineteen DeepSeek rows have missing semantic diversity because the parser extracted zero valid uses; these are format-compliance failures, not embedding failures.
 
 ### 3.3 Scoring
 
@@ -170,7 +178,7 @@ These were run on the three models that showed significant effects in Section 4.
 
 - **H_null_tokens (token budget explains the effect): falsified on semantic diversity in all three models (p<.001); not falsified on judge-rated elaboration in Anthropic models.** A nuanced outcome that warrants careful interpretation (Section 5.1).
 
-**The mechanism evidence is striking.** Across all three models, *making the default prompt longer collapses semantic diversity below even the baseline default* (Sonnet: 0.694 → 0.514; Opus: 0.707 → 0.583; GPT-4o: 0.640 → 0.558). The model fills the extra tokens with more elaborate descriptions of the *same conceptual neighbourhood*. Tangent-return is the only condition that produces both extended responses *and* maintained conceptual spread — and it is the only condition whose explicit instruction is to traverse a tangent before each new use.
+**The mechanism evidence is diagnostic.** Across all three models, *making the default prompt longer collapses semantic diversity below even the baseline default* (Sonnet: 0.694 → 0.514; Opus: 0.707 → 0.583; GPT-4o: 0.640 → 0.558). The model fills the extra tokens with more elaborate descriptions of the *same conceptual neighbourhood*. Tangent-return is the only condition that produces both extended responses *and* maintained conceptual spread — and it is the only condition whose explicit instruction is to traverse a tangent before each new use.
 
 
 ### 4.3 Cross-model robustness
@@ -203,6 +211,27 @@ Two implications:
 
 2. **Opus 4.5 default is Pareto-dominated by Sonnet 4.5 default** — at higher cost, lower quality. Tangent-return reverses the order (Opus 4.5 + TR is the highest-quality non-GPT-5 option). The implication for divergent tasks: model selection should be made *jointly* with prompt selection, not sequentially.
 
+### 4.5 DeepSeek cost frontier
+
+The DeepSeek extension changes the practical frontier more than the original Anthropic/OpenAI run. Table 4 uses the same composite metric as Table 2 and the same Sonnet 4.5 judge. Costs are generation-only agent costs from API usage records; judge and embedding costs are excluded because they are shared evaluation costs.
+
+**Table 4.** DeepSeek route comparison, sorted by cost-normalised quality.
+
+| Model + condition | Cost / 1k generations | Composite quality |
+|---|---:|---:|
+| deepseek-chat default | $0.10 | 4.19 |
+| deepseek-v4-flash default | $0.10 | 4.18 |
+| deepseek-v4-flash + tangent-return | $0.26 | 3.93 |
+| deepseek-reasoner default | $0.26 | 3.88 |
+| deepseek-chat + tangent-return | $0.27 | 3.31 |
+| deepseek-v4-pro default | $0.35 | 4.30 |
+| **deepseek-v4-pro + tangent-return** | **$0.78** | **4.74** |
+| deepseek-reasoner + tangent-return | $0.72 | 4.24 |
+
+The strongest DeepSeek cell, V4 Pro + tangent-return, exceeds GPT-5 default (4.74 vs 4.62) and GPT-5 + tangent-return (4.74 vs 4.67) in this AUT setup. Its generation cost is $0.78 per 1k generations, versus $75.31 for GPT-5 default and $132.96 for GPT-5 + tangent-return: about 97x and 170x lower, respectively.
+
+This is not evidence that tangent-return helps every DeepSeek route. V4 Pro improves on all judge-rated dimensions under tangent-return. V4 Flash default is already strong and cheaper; tangent-return improves semantic diversity but lowers composite judge quality. The `deepseek-chat` route performs poorly under tangent-return because many responses fail the parser's expected use format. For deployment, the result is a routing rule, not a slogan: use V4 Flash default for the cheapest strong baseline, and V4 Pro + tangent-return when absolute AUT-style divergent quality matters.
+
 ---
 
 ## 5. Discussion
@@ -219,7 +248,7 @@ A refined H1, supported across all three ablation models with p<.001, is the cle
 
 Three observations support H1′ specifically rather than the broader H1:
 
-1. **The semantic-diversity inversion under length-matching is striking.** Adding the "produce ~600 tokens" instruction to the default prompt *reduces* semantic diversity below the unmodified default in all three models. The model uses the extra tokens to elaborate further on a smaller set of conceptual themes, not to find more themes. Tangent-return — which explicitly requires a new tangent before each use — is uniquely positioned to use extended length for new conceptual territory rather than deeper exploration of the same territory.
+1. **The semantic-diversity inversion under length-matching is the clearest signal.** Adding the "produce ~600 tokens" instruction to the default prompt *reduces* semantic diversity below the unmodified default in all three models. The model uses the extra tokens to elaborate further on a smaller set of conceptual themes, not to find more themes. Tangent-return — which explicitly requires a new tangent before each use — is uniquely positioned to use extended length for new conceptual territory rather than deeper exploration of the same territory.
 
 2. **Examples-matching changes little.** Across models and metrics, default_examples is closer to default than to tangent-return. The worked examples shown in the tangent-return prompt do not, on their own, produce the operation's effect.
 
@@ -239,7 +268,15 @@ The ablations identify the mechanism more precisely than the main experiment alo
 
 We still lack direct mechanism evidence at the activation level. The ablations have moved the question from "does the operation work?" to "what specifically does the operation do?" — and the answer suggested by these data is *structural divergence preservation*.
 
-### 5.3 Neurodiversity as engineering inspiration: a research programme
+### 5.3 Provider and model dependence
+
+The DeepSeek extension forces a useful qualification. Tangent-return is not a model-agnostic improvement switch. It interacts with model family, route, output-format compliance, and baseline capability.
+
+In this run, V4 Pro is the clean positive case: tangent-return raises originality, flexibility, and elaboration while remaining cheap enough to dominate the original GPT-5 cost-quality point. V4 Flash is the cautionary case: semantic diversity rises, but judge-rated composite falls because the returned uses are less complete. The `deepseek-chat` and `deepseek-reasoner` aliases also illustrate why provider route metadata matters; both accepted routes returned V4 Flash in this API window, so labels alone would overstate model diversity.
+
+The practical conclusion is conditional. The operation should be benchmarked with the target model and task family before deployment. The result supports tangent-return as a reusable cognitive-operation hypothesis, not as a universal prompt suffix.
+
+### 5.4 Neurodiversity as engineering inspiration: a research programme
 
 The result of this paper is narrow by design: one cognitive operation, one task family, one judge model. The implication is much broader, and we state it explicitly.
 
@@ -260,7 +297,7 @@ A methodological note on this research programme. The operations described above
 
 We close with a normative observation that the present authors take seriously and that the field, in our view, should take more seriously. Neurodivergent cognition has been catalogued for over a century. The cataloguing has been almost entirely cost-side: what these modes fail at, what they cannot tolerate, what they need accommodated. The value-side — what these modes produce that no other mode produces — has been treated as anecdote, exception, or curiosity. The methodology now exists to measure it. The work presented here is one data point. There is room for many more.
 
-### 5.4 What this is not
+### 5.5 What this is not
 
 This is not a claim that LLMs *think like* neurodivergent humans, nor that neurodivergent thinking is reducible to a prompt. The cognitive operation we have encoded is a single, well-articulated *instance* of a much broader space of cognitive variance. It is a useful instance; it is not the territory.
 
@@ -268,21 +305,21 @@ This is not a claim that LLMs *think like* neurodivergent humans, nor that neuro
 
 ## 6. Limitations
 
-We declare the following limitations explicitly because the cognitive-operation claim hinges on ruling them out.
+We declare the following limitations explicitly because the cognitive-operation claim depends on them.
 
-1. **Token-budget confound (load-bearing).** Tangent-return responses use ~2× the output tokens of default responses (mean 685 vs 343 for Sonnet 4.5). Some portion of the quality gain is plausibly attributable to expanded compute alone. We argue against a pure-tokens explanation on two grounds: (a) embedding-based semantic diversity — which does not strictly track token count — improves significantly on 3 of 4 models, and (b) the largest gains appear on originality, which has a low upper bound and is not obviously elongation-elastic. Neither rules tokens out as a mediator. **A length-matched ablation — instructing the default condition to produce ~600-token responses — is necessary future work and gates the cognitive-operation claim. Without it, the present results support the weaker claim that the *combination* of tangent-return structure, in-prompt examples, and expanded token budget improves LLM-judge ratings for AUT-style divergent generation.**
+1. **Human validation is still missing.** The judge is an LLM (`claude-sonnet-4-5`) and shares a family with two original test conditions. Semantic diversity gives a judge-independent cross-check, but human pairwise ratings are still required before treating the judge-rated quality gains as external validation.
 
-2. **In-prompt examples confound.** The tangent-return prompt includes two worked examples ("brick → thermal mass → bed-warmer"); the default prompt does not include equivalent worked examples of creative uses. Few-shot examples are well-documented to shift LLM outputs substantially. A control condition that gives the default prompt equivalent uses-only examples (without tangent labels) would isolate the effect of the cognitive-operation framing from the effect of demonstration. This is required future work.
+2. **Ablations were run on the original positive models, not every later route.** Length-matched and examples-matched controls were run on Sonnet 4.5, Opus 4.5, and GPT-4o. The DeepSeek sweep used the same default-vs-tangent-return contrast and same judge, but did not repeat the full ablation matrix for each DeepSeek route.
 
-3. **Judge is also an LLM, and shares a family with two test conditions.** The judge (claude-sonnet-4-5) is the same model family as Sonnet 4.5 and Opus 4.5. While the effect direction is consistent across both providers (including the two OpenAI models), judge-family bias toward Claude-style outputs cannot be ruled out without human-rater validation on a subsample (planned for v2, ~30 pair-judgments).
+3. **The model may not be executing the operation it is instructed to.** The output format (Tangent: ... Use: ...) is observable; the underlying cognitive process is not. The model may be generating creative uses and retroactively labelling them. We cannot distinguish "model executed tangent-return" from "model produced uses and formatted them according to a template" from output alone. Probing experiments on open-weight models are required for mechanism claims beyond output structure.
 
-4. **The model may not be executing the operation it is instructed to.** The output format (Tangent: ... Use: ...) is observable; the underlying cognitive process is not. The model may be generating creative uses and retroactively labelling them. We cannot distinguish "model executed tangent-return" from "model produced uses and formatted them according to a template" from output alone. Probing experiments on open-weight models (testing whether the tangent comes *before* the use in the model's internal representation) are required future work.
+4. **One task family.** AUT measures one specific kind of divergent thinking: object reframing. Generalisation to creative writing, open-ended design, problem reframing, or coding is hypothesis, not finding.
 
-5. **One task family.** AUT measures one specific kind of divergent thinking (object reframing). Generalisation to other divergent tasks — creative writing, open-ended design, problem reframing — is hypothesis, not finding. Experiments 02-04 are planned to address this.
+5. **Single language (English).** Tangent-return as instructed may rely on English-specific associative networks.
 
-6. **Single language (English).** Tangent-return as instructed may rely on English-specific associative networks.
+6. **Cost claims are generation-cost claims.** The headline ratios exclude judge and embedding costs because those are shared evaluation costs, not deployment-time agent generation costs. They also depend on the pricing and route behaviour observed during the API window.
 
-7. **GPT-5 reasoning token billing uncertainty.** GPT-5's internal reasoning tokens are billed but may or may not appear in the API's reported output token count. Our cost calculations may *understate* GPT-5's true cost; the cost-efficiency finding is robust to this uncertainty in only one direction.
+7. **GPT-5 reasoning token billing uncertainty.** GPT-5's internal reasoning tokens are billed but may or may not appear in the API's reported output token count. Our cost calculations may understate GPT-5's true cost; the cost-efficiency finding is robust to this uncertainty in only one direction.
 
 8. **No inner-committee test.** The theoretical extension — multiple agents each running tangent-return from distinct cognitive characters — is theorised in the project repository but not tested in this experiment. Experiment 02 will address it.
 
@@ -290,13 +327,9 @@ We declare the following limitations explicitly because the cognitive-operation 
 
 ## 7. Future Work
 
-Three confound-resolution experiments come first, gating the cognitive-operation claim:
+One validation step comes first:
 
-**0a. Length-matched ablation.** Default condition with explicit "produce ~600 tokens" instruction, retested. Resolves the token-budget confound.
-
-**0b. Example-matched ablation.** Default condition with two worked uses-only examples (no tangent labelling), retested. Resolves the in-prompt-examples confound.
-
-**0c. Human-rater validation.** Pairwise human comparison (default vs tangent-return) on a 30–50 response subsample, on a "creativity" 5-point scale. Resolves the judge-bias concern. If human raters confirm the effect, the cognitive-operation claim hardens; if they do not, the paper scopes to "structured-reasoning format improves LLM-judge ratings".
+**0a. Human-rater validation.** Pairwise human comparison (default vs tangent-return) on a 30–50 response subsample, on a "creativity" 5-point scale. This resolves the judge-bias concern. If human raters confirm the effect, the cognitive-operation claim hardens; if they do not, the paper scopes to "structured-reasoning format improves LLM-judge ratings and embedding diversity".
 
 Three substantive extensions follow:
 

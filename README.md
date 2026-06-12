@@ -1,14 +1,14 @@
 # Magpie Thinking
 
-*Tangent-return cognition, tested as an architecture for LLM agent swarms.*
+*Tangent-return cognition, tested as a concrete LLM prompting operation.*
 
-Most "creative" LLM prompting either turns up the temperature or asks the model to "think outside the box". This repo tests something more specific: that a deliberate **tangent-return loop** — mainline thought → interesting tangent → synthesise the tangent back into the mainline → carry forward → repeat — produces measurably better outputs on divergent tasks than default agent reasoning. And that a parallel **inner committee** of such agents, each with a distinct character running the same loop, does better still.
+Most "creative" LLM prompting either turns up the temperature or asks the model to "think outside the box". This repo tests something more specific: whether a deliberate **tangent-return loop** — mainline thought -> interesting tangent -> synthesise the tangent back into the mainline -> carry forward -> repeat — produces measurably different outputs on divergent tasks than default agent reasoning.
 
 The pattern is borrowed from how my own AuDHD (autism + ADHD) brain actually solves hard problems. The claim is that the cognitive operation is portable.
 
-> 📄 **For the empirical study with full methods, stats, and confound declarations:** [`writeup/paper.md`](writeup/paper.md)
-> ✍️ **For the lived-experience narrative version:** [`writeup/post.md`](writeup/post.md)
-> 🧪 **For the prompt you can paste anywhere:** [`prompts/tangent-return.md`](prompts/tangent-return.md)
+> **Empirical study with methods, stats, and confounds:** [`writeup/paper.md`](writeup/paper.md)
+> **Lived-experience narrative version:** [`writeup/post.md`](writeup/post.md)
+> **Prompt you can paste anywhere:** [`prompts/tangent-return.md`](prompts/tangent-return.md)
 
 ## The claim being tested
 
@@ -68,6 +68,18 @@ Each experiment runs three conditions at fixed N, fixed model, fixed temperature
 
 Secondary metrics across all experiments: inter-output semantic distance (embedding cosine), best-of-N quality, coverage where enumerable, cost-normalised quality, and synthesiser-lift (a fixed downstream synthesiser agent is fed the swarm outputs and the resulting artefact is scored).
 
+### Current headline
+
+The strongest current result is cost-normalised, not universal:
+
+- On the original frontier-model AUT run, Sonnet 4.5 + tangent-return reached 95% of GPT-5 default composite quality at 15% of the generation cost.
+- On the follow-up DeepSeek sweep, **DeepSeek V4 Pro + tangent-return scored 4.74 composite quality**, above GPT-5 default (4.62) and GPT-5 + tangent-return (4.67), at **$0.78 per 1k generations**. That is about **97x lower generation cost than GPT-5 default** and **170x lower than GPT-5 + tangent-return** in these runs.
+- The DeepSeek result is model-dependent. V4 Pro benefits from tangent-return; V4 Flash is cheaper and strong without it; `deepseek-chat` and `deepseek-reasoner` currently returned the V4 Flash backend in this API window.
+
+The same Claude Sonnet 4.5 judge and rubric were used for the original and DeepSeek scoring, so the comparison is not confounded by changing judges. Judge and embedding costs are excluded from the headline ratios because they are shared evaluation costs, not agent generation costs.
+
+DeepSeek scoring completed for all 240 responses. Nineteen semantic-diversity values are missing because the parser extracted zero valid uses from those responses; the judge scores are complete.
+
 ## Repo layout
 
 ```
@@ -108,13 +120,25 @@ cd magpie-thinking
 cp .env.example .env   # add your ANTHROPIC_API_KEY
 ```
 
-Open `magpie-thinking.Rproj` in RStudio. Run commands land with the first committed experiment.
+Open `magpie-thinking.Rproj` in RStudio. The original frontier-model AUT run is in `experiments/01_aut.R`. The DeepSeek AUT generation and resumable postprocess pipeline are:
+
+```bash
+Rscript experiments/01_deepseek_aut.R --thinking=disabled
+Rscript experiments/01_deepseek_postprocess.R \
+  --runs=data/runs/<deepseek-run>.jsonl \
+  --judge-model=claude-sonnet-4-5 \
+  --judge-jobs=4
+```
+
+The postprocess step writes one judge-cache file per response and can resume after failures without re-scoring completed rows.
 
 ## Status
 
-**Experiment 01 complete.** Single-agent tangent-return tested across 4 frontier models (Claude Sonnet 4.5, Claude Opus 4.5, GPT-4o, GPT-5) on the Alternative Uses Test. Three of four models show significant gains on originality and elaboration; the fourth is at ceiling. Full results in [`results/`](results/), preprint at [`writeup/paper.md`](writeup/paper.md), accessible writeup at [`writeup/post.md`](writeup/post.md).
+**Experiment 01 complete.** Single-agent tangent-return tested across 4 frontier models (Claude Sonnet 4.5, Claude Opus 4.5, GPT-4o, GPT-5) on the Alternative Uses Test. Three of four models show significant gains on originality and elaboration; the fourth is at ceiling. Confound checks show the defensible mechanism claim is narrower: tangent-return preserves semantic spread better than length-matched and examples-matched controls.
 
-**Pending — and load-bearing for the cognitive-operation claim:** the limitations section of the paper names two confounds (token budget, in-prompt examples) that need direct ablations before the claim can be made cleanly. Those are experiment 01a/01b. After that, experiments 02-04 extend to inner-committee swarms and other divergent tasks (see [hypotheses](#the-claim-being-tested) below).
+**DeepSeek follow-up complete.** The same AUT design was run across `deepseek-chat`, `deepseek-v4-flash`, `deepseek-reasoner`, and `deepseek-v4-pro`, then scored with the same Sonnet 4.5 judge. V4 Pro + tangent-return is the best absolute score in the repo so far; V4 Flash default is the cheap high-value option; tangent-return is not uniformly helpful across all DeepSeek routes.
+
+**Next:** experiments 02-04 extend to inner-committee swarms and other divergent tasks (see [hypotheses](#the-claim-being-tested) above). Human-rater validation remains the main unresolved validation step.
 
 Null results — for any of the above — will be published as null. This is not a marketing exercise.
 

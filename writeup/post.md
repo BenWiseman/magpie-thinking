@@ -18,11 +18,11 @@ I'm not a great teacher of this. The thing I do is involuntary and I can't reall
 
 Years later I had a thought. What if I could prompt an LLM to do the same thing my brain does, and see if it produced better outputs?
 
-A weekend of tinkering and five bucks of API calls later, I had an answer.
+A weekend of tinkering and five bucks of API calls later, I had a first answer.
 
-Short version: across three of the four frontier models I tested, prompting the model to think in the AuDHD pattern produced statistically significant improvements on the standard psychometric measure of divergent thinking. The fourth model (the most expensive reasoning one) was already at ceiling, so there was nowhere to go. Repo, code, data, prompt: [github.com/BenWiseman/magpie-thinking](https://github.com/BenWiseman/magpie-thinking).
+Short version: across three of the four frontier models I tested, prompting the model to think in the AuDHD pattern produced statistically significant improvements on the standard psychometric measure of divergent thinking. The fourth model (the most expensive reasoning one) was already at ceiling, so there was nowhere to go. A later DeepSeek sweep, scored with the same judge, found the strongest cost-quality point so far: DeepSeek V4 Pro plus tangent-return beat GPT-5 default and GPT-5 plus tangent-return on this task at roughly 97x and 170x lower generation cost respectively. That is not a universal "TR works on everything" claim; DeepSeek V4 Flash was strongest as a cheap default route. Repo, code, data, prompt: [github.com/BenWiseman/magpie-thinking](https://github.com/BenWiseman/magpie-thinking).
 
-The longer version is more interesting. Stay with me.
+Here is the longer version.
 
 ---
 
@@ -81,7 +81,7 @@ Two conditions per model. A default prompt asking for creative uses of an everyd
 
 The benchmark was the Alternative Uses Test, a 60-year-old psychology measure of divergent thinking. Pick an object (brick, paperclip, newspaper, shoe), list creative uses. Score on fluency, originality, flexibility, elaboration. Ten objects, three repeated samples per condition, scored by an independent LLM judge using a structured rubric, with embedding-based cross-validation.
 
-The whole thing cost under five dollars and took about 75 minutes. The prompts, code, and data are at the repo.
+The original four-model run cost under five dollars and took about 75 minutes. The prompts, code, and data are at the repo.
 
 ---
 
@@ -89,7 +89,7 @@ The whole thing cost under five dollars and took about 75 minutes. The prompts, 
 
 The hypothesis didn't get falsified.
 
-Across three of four models, tangent-return significantly improved originality. On Opus 4.5 the gain was +0.77 on a 5-point scale (p<.001). On Sonnet 4.5, +0.60 (p=.002). On GPT-4o, +0.43 (p=.006). GPT-5 was already scoring 3.96 out of 5 in the default condition, so it had nowhere to climb on that metric. Same story for elaboration and flexibility. The judge-independent embedding measure of semantic diversity also improved significantly on three of four models, which matters because LLM judges can be biased and embeddings can't.
+Across three of four models, tangent-return significantly improved originality. On Opus 4.5 the gain was +0.77 on a 5-point scale (p<.001). On Sonnet 4.5, +0.60 (p=.002). On GPT-4o, +0.43 (p=.006). GPT-5 was already scoring 3.96 out of 5 in the default condition, so it had nowhere to climb on that metric. Same story for elaboration and flexibility. The judge-independent embedding measure of semantic diversity also improved significantly on three of four models, which matters because it is not the same LLM judge looking at the same prose.
 
 ![Per-model effects of tangent-return prompting](../results/01_aut_scorecards.png)
 
@@ -106,7 +106,7 @@ But I wasn't ready to call this done. "Measurably better" can fail in two boring
 
 So I ran two more ablation conditions. One was a length-matched default, instructed to produce around 600 tokens (matching tangent-return's typical length). The other was an examples-matched default, given the same example uses as tangent-return but with the tangent labels stripped.
 
-This is where it got interesting.
+The ablation changed the interpretation.
 
 Examples alone did almost nothing. Default-plus-examples scored barely above default. The worked examples in the tangent-return prompt are not what's doing the work.
 
@@ -120,11 +120,11 @@ Which is exactly what tangent-return is structurally for. Every tangent forces t
 
 So the headline I started with was wrong, in a useful way. It's not "tangent-return makes the model better at everything". It's something more specific: tangent-return preserves conceptual spread across a response in a way that nothing else replicates. It's not thinking more, it's thinking in more places.
 
-That's the shape of a real finding. I went in trying to falsify, ran two of the most obvious confound-controlled experiments, and what survived was more specific and more defensible than the claim I started with.
+That is the current finding. I went in trying to falsify, ran two of the most obvious confound-controlled experiments, and what survived was more specific and more defensible than the claim I started with.
 
 ---
 
-## The cost-quality kicker
+## The cost-quality result
 
 There's a practical consequence I didn't anticipate.
 
@@ -132,11 +132,19 @@ GPT-5 won the default-condition comparison cleanly. With no creative prompting b
 
 Add tangent-return prompting to Sonnet and its composite quality climbs to 4.38 out of 5. GPT-5's default-condition composite is 4.62. That's 95% of the quality at 15% of the cost.
 
-Prompting Claude like an AuDHD brain produces output competitive with the flagship reasoning model at one-seventh the cost. I let that one sit for a few days.
+Prompting Claude like an AuDHD brain produced output competitive with the flagship reasoning model at one-seventh the cost in that first run.
 
 ![Tangent-return shifts every model's cost-quality position](../results/01_paired_arrow_pareto.png)
 
-That curve is what matters for anyone actually building things. If you're a small team trying to do creative work at scale, the constraint is usually what you can afford to run, not what the best model can do in absolute terms. Tangent-return shifts that constraint by an order of magnitude on the work where it applies.
+Then I ran the same AUT design on DeepSeek routes and scored it with the same Sonnet 4.5 judge. The cost frontier moved again.
+
+DeepSeek V4 Pro plus tangent-return scored 4.74 composite quality. GPT-5 default scored 4.62. GPT-5 plus tangent-return scored 4.67. The DeepSeek V4 Pro tangent-return cell cost $0.78 per 1,000 generations. GPT-5 default cost $75.31 per 1,000 generations. GPT-5 plus tangent-return cost $132.96 per 1,000 generations.
+
+So the careful headline is: on this AUT setup, DeepSeek V4 Pro plus tangent-return beat GPT-5 default at about 1% of the generation cost. It also beat GPT-5 plus tangent-return at about 170x lower generation cost.
+
+The caveat matters. DeepSeek V4 Flash was already strong without the operation. Tangent-return improved its semantic diversity but lowered its composite judge score. The result is a routing rule, not a spell: cheap baseline, use V4 Flash default; best score in this task family, use V4 Pro plus tangent-return.
+
+That curve is what matters for anyone actually building things. If you're a small team trying to do creative work at scale, the constraint is usually what you can afford to run, not what the best model can do in absolute terms. Tangent-return can shift that constraint by an order of magnitude on the work where it applies, but it still needs to be benchmarked against the model and task you actually plan to run.
 
 ---
 
@@ -170,7 +178,7 @@ If you're a manager, a teacher, a founder, an investor, or anyone else who build
 
 ---
 
-## What I'd love to see next
+## Next work
 
 Tangent-return is one operation associated with one neurodivergent profile, tested on one task family. There are more. Pattern-first reasoning. Hyperfocus chains. Sensory-detail anchoring. Parallel-thread tracking. Associative noticing. The autistic "find the rule first" loop. Most of them are articulable, falsifiable, and cost about five bucks of API calls each to test honestly.
 
@@ -184,10 +192,10 @@ The prompt is short. Paste it into ChatGPT, Claude, Gemini, any chat interface. 
 
 For Claude Code users, the same operation is packaged as a drop-in skill at [github.com/BenWiseman/magpie-thinking/tree/main/skills/tangent-return](https://github.com/BenWiseman/magpie-thinking/tree/main/skills/tangent-return).
 
-The full preprint with stats, methods, references, and the confounds I haven't yet resolved is in the same repository under [writeup/paper.md](paper.md). It's not peer-reviewed. It explains what was done so others can replicate or contest it.
+The full preprint with stats, methods, references, and current limitations is in the same repository under [writeup/paper.md](paper.md). It's not peer-reviewed. It explains what was done so others can replicate or contest it.
 
-If the prompt works for you on something interesting I'd love to know. If it doesn't, I'd love to know that too. Null results are part of the picture.
+If the prompt works for you on something concrete, send it through. If it fails, send that too. Null results are part of the picture.
 
 ---
 
-*The longer I sit with this the more convinced I am that "inefficient" is doing a lot of unexamined work in how we describe minds, human and artificial. Next experiment tests whether a swarm of agents each running tangent-return from a different cognitive vantage outperforms a clone swarm. Repo subscribe button is where you'd expect it.*
+*The longer I sit with this the more convinced I am that "inefficient" is doing a lot of unexamined work in how we describe minds, human and artificial. The next validation step is human-rated comparison; the next architecture step is whether a swarm of agents each running tangent-return from a different cognitive vantage outperforms a clone swarm.*

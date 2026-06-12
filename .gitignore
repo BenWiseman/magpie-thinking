@@ -22,6 +22,8 @@ renv/python/
 data/runs/
 *.jsonl.gz
 *.rds.gz
+results/*_smoke_*
+results/*_judge_cache/
 
 # macOS
 .DS_Store
